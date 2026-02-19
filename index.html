@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRU-DUB — Michigan Compliant Cannabis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#080a06; --deep:#0d110a; --forest:#0f1a0c; --olive:#1a2714;
+  --green:#2d5a1b; --lime:#5a9e2f; --bright:#7ec832; --neon:#a8e034;
+  --gold:#c8a84b; --amber:#e8921a;
+  --white:#f2f5ee; --muted:#8a9e7a; --dim:#4a5a3a;
+  --G:'Bebas Neue',sans-serif;
+  --B:'Space Grotesk',sans-serif;
+  --M:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--black);color:var(--white);cursor:default}
+
+/* grain removed — clean HD render */
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;
+  background:rgba(8,10,6,.85);backdrop-filter:blur(24px);border-bottom:1px solid rgba(90,158,47,.15)}
+.nav-brand{display:flex;align-items:center;gap:14px}
+.nav-logo{width:52px;height:34px;position:relative;flex-shrink:0;border:1px solid rgba(255,255,255,.15);border-radius:2px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.6)}
+.nav-logo svg{width:100%;height:100%;display:block}
+.nav-name{font-family:var(--G);font-size:1.8rem;letter-spacing:.12em;color:var(--neon);line-height:1}
+.nav-tag{font-family:var(--M);font-size:.55rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:1px}
+.nav-pages{display:flex;gap:0}
+.nav-btn{font-family:var(--M);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);background:none;border:none;border-bottom:2px solid transparent;padding:0 1rem;height:64px;cursor:pointer;transition:color .2s,border-color .2s}
+.nav-btn:hover{color:var(--neon)}
+.nav-btn.active{color:var(--neon);border-bottom-color:var(--neon)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.compliance-badge{display:flex;align-items:center;gap:7px;padding:5px 14px;border-radius:3px;background:rgba(90,158,47,.1);border:1px solid rgba(90,158,47,.3);font-family:var(--M);font-size:.55rem;letter-spacing:.12em;color:var(--lime);text-transform:uppercase}
+.compliance-dot{width:6px;height:6px;background:var(--lime);border-radius:50%;animation:blink 2.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* WALLET BUTTON */
+#wallet-btn{display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:3px;background:transparent;border:1px solid var(--neon);color:var(--neon);font-family:var(--M);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .2s}
+#wallet-btn:hover{background:rgba(168,224,52,.1)}
+#wallet-btn.connected{border-color:var(--lime);color:var(--white);background:rgba(90,158,47,.15)}
+#wallet-btn svg{width:14px;height:14px;flex-shrink:0}
+
+/* TRACK */
+#track{display:flex;width:400vw;height:100vh;transition:transform .8s cubic-bezier(.77,0,.175,1);will-change:transform}
+.slide{position:relative;width:100vw;height:100vh;flex-shrink:0;overflow:hidden}
+.slide-bg{position:absolute;inset:0;background-size:cover;background-position:center;transform:scale(1.04);filter:brightness(.3) saturate(.75);transition:transform 1.6s cubic-bezier(.25,.46,.45,.94),filter 1.3s ease;image-rendering:high-quality}
+.slide.active .slide-bg{transform:scale(1);filter:brightness(.45) saturate(.9)}
+.slide-overlay{position:absolute;inset:0;background:linear-gradient(110deg,rgba(8,10,6,.9) 0%,rgba(8,10,6,.65) 45%,rgba(8,10,6,.2) 100%)}
+.slide-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;padding:80px 5vw 80px 5vw;max-width:660px}
+
+/* EYEBROW */
+.eyebrow{font-family:var(--M);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--neon);margin-bottom:1.2rem;display:flex;align-items:center;gap:12px}
+.eyebrow::after{content:'';flex:1;max-width:40px;height:1px;background:var(--lime)}
+
+/* TITLES */
+.slide-title{font-family:var(--G);font-size:clamp(3rem,6vw,5.5rem);line-height:.95;letter-spacing:.04em;color:var(--white);margin-bottom:.8rem}
+.slide-title .hi{color:var(--neon)}
+.slide-sub{font-family:var(--B);font-size:clamp(.95rem,1.4vw,1.1rem);color:rgba(242,245,238,.6);line-height:1.75;max-width:460px;margin-bottom:1.8rem;font-weight:300}
+
+/* MENU STACK */
+.menu-stack{display:flex;flex-direction:column;gap:.15rem;width:100%;max-width:540px}
+.menu-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;text-align:left;transition:border-color .2s,transform .15s;gap:12px}
+.menu-btn:hover{border-bottom-color:rgba(168,224,52,.3);transform:translateX(5px)}
+.menu-btn.open{border-bottom-color:rgba(168,224,52,.5);transform:none}
+.menu-label{font-family:var(--G);font-size:1.1rem;letter-spacing:.08em;color:rgba(242,245,238,.85);transition:color .2s}
+.menu-btn:hover .menu-label,.menu-btn.open .menu-label{color:var(--neon)}
+.menu-badge{display:none}
+.menu-arrow{width:14px;height:14px;flex-shrink:0;color:rgba(168,224,52,.4);transition:transform .3s cubic-bezier(.4,0,.2,1),color .2s}
+.menu-btn:hover .menu-arrow,.menu-btn.open .menu-arrow{color:var(--neon)}
+.menu-btn.open .menu-arrow{transform:rotate(180deg)}
+
+/* PANEL */
+.menu-panel{max-height:0;overflow:hidden;transition:max-height .42s cubic-bezier(.4,0,.2,1);background:transparent;border-left:1px solid rgba(168,224,52,.12)}
+.menu-panel.open{max-height:600px}
+.mpi{padding:.9rem .9rem .9rem 1.2rem}
+.panel-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem}
+.panel-list li{display:flex;align-items:flex-start;gap:10px;font-family:var(--B);font-size:.92rem;color:rgba(242,245,238,.75);line-height:1.55;font-weight:300}
+.panel-list li::before{content:'—';color:var(--lime);font-size:.7rem;margin-top:.3rem;flex-shrink:0;font-family:var(--M)}
+.panel-row{display:flex;gap:.7rem;margin-bottom:1rem;flex-wrap:wrap}
+.pstat{flex:1;min-width:80px;background:rgba(15,26,12,.9);border:1px solid rgba(90,158,47,.25);border-radius:3px;padding:.8rem;text-align:center}
+.pstat-v{font-family:var(--G);font-size:1.6rem;color:var(--neon);display:block;letter-spacing:.06em}
+.pstat-l{font-family:var(--M);font-size:.52rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.pa{display:inline-flex;align-items:center;gap:7px;padding:.6rem 1.4rem;border-radius:3px;font-family:var(--M);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;transition:all .2s;font-weight:500}
+.pa-green{background:var(--neon);color:var(--black)}.pa-green:hover{background:var(--bright)}
+.pa-outline{background:transparent;color:var(--neon);border:1px solid rgba(168,224,52,.4)}.pa-outline:hover{background:rgba(168,224,52,.08);border-color:var(--neon)}
+.pa-gold{background:var(--gold);color:var(--black)}.pa-gold:hover{background:var(--amber)}
+.pmemo{font-family:var(--M);font-size:.62rem;color:var(--muted);background:rgba(15,26,12,.9);border:1px solid rgba(90,158,47,.2);border-radius:3px;padding:.55rem .9rem;margin:.7rem 0;letter-spacing:.04em}
+.pmemo span{color:var(--neon)}
+.compliance-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.7rem 0}
+.cg-item{background:rgba(15,26,12,.85);border:1px solid rgba(90,158,47,.2);border-radius:3px;padding:.7rem .9rem}
+.cg-item strong{font-family:var(--M);font-size:.58rem;color:var(--neon);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.3rem}
+.cg-item span{font-family:var(--B);font-size:.8rem;color:var(--muted);font-weight:300}
+.chain-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:.6rem}
+.cs-n{font-family:var(--M);font-size:.58rem;color:var(--black);background:var(--neon);padding:2px 7px;border-radius:2px;flex-shrink:0;margin-top:2px;font-weight:500}
+.cs-t{font-family:var(--M);font-size:.7rem;color:var(--white)}
+.cs-s{font-family:var(--B);font-size:.82rem;color:var(--muted);line-height:1.4;font-weight:300}
+
+/* PRICE TAG */
+.price-hero{display:flex;align-items:baseline;gap:8px;margin:.8rem 0}
+.price-amt{font-family:var(--G);font-size:3.5rem;color:var(--neon);letter-spacing:.06em;line-height:1}
+.price-unit{font-family:var(--M);font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase}
+.price-note{font-family:var(--M);font-size:.62rem;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+
+/* ARROWS + DOTS */
+.sarrow{position:fixed;top:50%;transform:translateY(-50%);z-index:700;width:44px;height:44px;border-radius:3px;border:1px solid rgba(90,158,47,.3);background:rgba(8,10,6,.6);backdrop-filter:blur(8px);color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.sarrow:hover{border-color:var(--neon);color:var(--neon)}
+.sarrow.hidden{opacity:0;pointer-events:none}
+#arrow-prev{left:.8rem}
+#arrow-next{right:.8rem}
+#slide-dots{position:fixed;bottom:1.8rem;left:50%;transform:translateX(-50%);z-index:700;display:flex;gap:10px;align-items:center}
+.sdot{width:5px;height:5px;border-radius:50%;cursor:pointer;background:rgba(168,224,52,.2);border:1px solid rgba(168,224,52,.15);transition:all .3s}
+.sdot.active{width:24px;border-radius:2px;background:var(--neon);border-color:var(--neon)}
+#slide-counter{position:fixed;bottom:1.5rem;right:2rem;z-index:700;font-family:var(--M);font-size:.58rem;color:rgba(168,224,52,.35);letter-spacing:.1em}
+
+/* COMPLIANCE TICKER */
+.ticker-wrap{overflow:hidden;border-top:1px solid rgba(90,158,47,.3);border-bottom:1px solid rgba(90,158,47,.3);background:rgba(0,0,0,.55);padding:.45rem 0;margin:.9rem 0}
+.ticker{display:flex;gap:4rem;animation:tick 28s linear infinite;white-space:nowrap}
+.ticker-item{font-family:var(--M);font-size:.72rem;letter-spacing:.14em;color:rgba(242,245,238,.75);text-transform:uppercase}
+.ticker-item span{color:var(--neon);font-weight:500}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* WALLET MODAL */
+#wallet-modal{position:fixed;inset:0;z-index:9800;display:flex;align-items:center;justify-content:center;background:rgba(8,10,6,.85);backdrop-filter:blur(16px);opacity:0;pointer-events:none;transition:opacity .25s}
+#wallet-modal.open{opacity:1;pointer-events:all}
+.wm-box{background:var(--deep);border:1px solid rgba(90,158,47,.3);border-radius:6px;padding:2rem;width:100%;max-width:400px;box-shadow:0 32px 80px rgba(0,0,0,.9)}
+.wm-title{font-family:var(--G);font-size:1.6rem;letter-spacing:.1em;color:var(--neon);margin-bottom:.3rem}
+.wm-sub{font-family:var(--M);font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem}
+.wm-options{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
+.wm-opt{display:flex;align-items:center;gap:14px;padding:.9rem 1.1rem;border-radius:4px;background:rgba(15,26,12,.8);border:1px solid rgba(90,158,47,.2);cursor:pointer;transition:all .2s}
+.wm-opt:hover{border-color:var(--neon);background:rgba(90,158,47,.08)}
+.wm-opt-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.wm-opt-name{font-family:var(--B);font-size:.92rem;color:var(--white);font-weight:500}
+.wm-opt-tag{font-family:var(--M);font-size:.55rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.wm-note{font-family:var(--M);font-size:.58rem;color:var(--dim);letter-spacing:.08em;line-height:1.7;text-align:center}
+.wm-note span{color:var(--lime)}
+.wm-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.2rem;padding:4px}
+.wm-box{position:relative}
+
+/* SOVEREIGN ID PANEL */
+#sid-panel{position:fixed;bottom:90px;right:28px;z-index:9700;width:320px;background:var(--deep);border:1px solid rgba(90,158,47,.3);border-radius:6px;padding:1.2rem;box-shadow:0 16px 48px rgba(0,0,0,.8);transform:translateY(10px) scale(.97);opacity:0;pointer-events:none;transition:all .25s}
+#sid-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.sid-title{font-family:var(--G);font-size:1rem;letter-spacing:.1em;color:var(--neon);margin-bottom:.2rem}
+.sid-sub{font-family:var(--M);font-size:.55rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+.sid-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(90,158,47,.1)}
+.sid-row:last-child{border-bottom:none}
+.sid-key{font-family:var(--M);font-size:.6rem;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.sid-val{font-family:var(--M);font-size:.62rem;color:var(--white)}
+.sid-val.green{color:var(--neon)}
+.sid-val.amber{color:var(--gold)}
+.sid-hash{font-family:var(--M);font-size:.52rem;color:var(--lime);word-break:break-all;margin-top:.3rem;padding:.4rem .6rem;background:rgba(15,26,12,.9);border-radius:3px;border:1px solid rgba(90,158,47,.15)}
+
+/* MOBILE */
+@media(max-width:768px){
+  .nav-pages{display:none}
+  .slide-content{padding:70px 1.4rem 5rem;max-width:100%}
+  .slide-title{font-size:clamp(2.4rem,9vw,3.5rem)}
+  .compliance-grid{grid-template-columns:1fr}
+  #sid-panel{width:calc(100% - 2rem);left:1rem;right:1rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-brand">
+    <div class="nav-logo" title="State of Michigan — Licensed Establishment">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Flag_of_Michigan.svg/320px-Flag_of_Michigan.svg.png" alt="Michigan State Flag" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+    </div>
+    <div>
+      <div class="nav-name">TRU-DUB</div>
+      <div class="nav-tag">Michigan Licensed Cannabis</div>
+    </div>
+  </div>
+  <div class="nav-pages">
+    <button class="nav-btn active" onclick="goTo(0)">Flower</button>
+    <button class="nav-btn" onclick="goTo(1)">Vapes</button>
+    <button class="nav-btn" onclick="goTo(2)">Edibles</button>
+    <button class="nav-btn" onclick="goTo(3)">Extracts</button>
+  </div>
+  <div class="nav-right">
+    <div class="compliance-badge"><span class="compliance-dot"></span>METRC Verified</div>
+    <button id="wallet-btn" onclick="openWallet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 12h.01"/><path d="M2 7l10-4 10 4"/></svg>
+      <span id="wallet-label">Connect Wallet</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ARROWS -->
+<button class="sarrow hidden" id="arrow-prev" onclick="goTo(cur-1)">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<button class="sarrow" id="arrow-next" onclick="goTo(cur+1)">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<!-- DOTS -->
+<div id="slide-dots">
+  <div class="sdot active" onclick="goTo(0)"></div>
+  <div class="sdot" onclick="goTo(1)"></div>
+  <div class="sdot" onclick="goTo(2)"></div>
+  <div class="sdot" onclick="goTo(3)"></div>
+</div>
+<div id="slide-counter">1 / 4</div>
+
+<!-- ═══ TRACK ═══ -->
+<div id="track">
+
+<!-- SLIDE 1 — FLOWER -->
+<div class="slide active" data-i="0">
+  <div class="slide-bg" style="background-image:url('https://media.istockphoto.com/id/597643860/photo/hemp-leaves.jpg?b=1&s=612x612&w=0&k=20&c=KQq9VxVqVzAvY5bAx7mSR0XWJIjniD3HAbgsZd40GX0=')"></div>
+  <div class="slide-overlay"></div>
+  <div class="slide-content">
+    <div class="eyebrow">Premium Flower · Michigan Grown</div>
+    <h1 class="slide-title">THE <span class="hi">TRU</span><br>DUB SACK<br>IS BACK</h1>
+    <div class="price-hero">
+      <span class="price-amt">$20</span>
+      <span class="price-unit">/ 4 grams</span>
+    </div>
+    <div class="price-note">Paying Homage · Old School Dub · New School Quality</div>
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="ticker-item">CRA Licensed <span>✓ MICHIGAN</span></span>
+        <span class="ticker-item">METRC Tracked <span>SEED-TO-SALE</span></span>
+        <span class="ticker-item">XRPL Anchored <span>CHAIN VERIFIED</span></span>
+        <span class="ticker-item">Lab Tested <span>COA ON FILE</span></span>
+        <span class="ticker-item">Sovereign ID <span>ACTIVE</span></span>
+        <span class="ticker-item">CRA Licensed <span>✓ MICHIGAN</span></span>
+        <span class="ticker-item">METRC Tracked <span>SEED-TO-SALE</span></span>
+        <span class="ticker-item">XRPL Anchored <span>CHAIN VERIFIED</span></span>
+        <span class="ticker-item">Lab Tested <span>COA ON FILE</span></span>
+        <span class="ticker-item">Sovereign ID <span>ACTIVE</span></span>
+      </div>
+    </div>
+    <div class="menu-stack">
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">The Dub Difference</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="panel-row">
+            <div class="pstat"><span class="pstat-v">4g</span><span class="pstat-l">Per Dub</span></div>
+            <div class="pstat"><span class="pstat-v">$20</span><span class="pstat-l">Flat Price</span></div>
+            <div class="pstat"><span class="pstat-v">100%</span><span class="pstat-l">Lab Tested</span></div>
+          </div>
+          <ul class="panel-list">
+            <li>4 grams for $20 — honoring the original dub sack price point from the street era</li>
+            <li>Premium Michigan-grown flower, indoor and outdoor seasonal varieties</li>
+            <li>Certificate of Analysis (COA) available on every batch via QR code</li>
+            <li>METRC package tag scanned at point of sale — fully reconciled</li>
+          </ul>
+          <button class="pa pa-green" onclick="goTo(0)">Shop Flower →</button>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Michigan Compliance</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="compliance-grid">
+            <div class="cg-item"><strong>CRA</strong><span>Cannabis Regulatory Agency licensed establishment</span></div>
+            <div class="cg-item"><strong>METRC</strong><span>Seed-to-sale tracking on every package</span></div>
+            <div class="cg-item"><strong>MDHHS</strong><span>Health & safety protocols fully observed</span></div>
+            <div class="cg-item"><strong>MDARD</strong><span>Agricultural standards for Michigan cultivation</span></div>
+          </div>
+          <ul class="panel-list">
+            <li>No sales to persons under 21 — ID verification required at door and at POS</li>
+            <li>Daily purchase limits enforced per CRA administrative rules</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">XRPL Audit Trail</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <ul class="panel-list">
+            <li>Every compliance event SHA-256 hashed and anchored to XRPL memo field</li>
+            <li>No PII, no inventory quantities, no customer data stored on-chain</li>
+            <li>Hash proves record integrity — court-defensible timestamping</li>
+            <li>Governed by Möbius Constitutional Accord Operating Agreement</li>
+          </ul>
+          <button class="pa pa-outline" onclick="showSID()">View Sovereign ID →</button>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2 — VAPES -->
+<div class="slide" data-i="1">
+  <div class="slide-bg" style="background-image:url('https://media.istockphoto.com/id/1189236721/photo/cannabis-thc-vapes-clean-marijuana-extracts.jpg?b=1&s=612x612&w=0&k=20&c=NUpnnSsB-iazawEmrBl5elCO-ycPKj1lOocZWkt3dr4=')"></div>
+  <div class="slide-overlay"></div>
+  <div class="slide-content">
+    <div class="eyebrow">Vape Cartridges · Distillate &amp; Live Resin</div>
+    <h2 class="slide-title">CLEAN<br><span class="hi">PULLS</span><br>EVERY TIME</h2>
+    <p class="slide-sub">Full-spectrum distillate and live resin carts. Michigan-processed, third-party tested, METRC-tagged from extraction to shelf.</p>
+    <div class="menu-stack">
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Vape Lineup</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="panel-row">
+            <div class="pstat"><span class="pstat-v">.5g</span><span class="pstat-l">Standard Cart</span></div>
+            <div class="pstat"><span class="pstat-v">1g</span><span class="pstat-l">Full Gram</span></div>
+            <div class="pstat"><span class="pstat-v">AIO</span><span class="pstat-l">All-In-One</span></div>
+          </div>
+          <ul class="panel-list">
+            <li>Distillate carts — refined, consistent, high potency</li>
+            <li>Live resin — full-spectrum terpene preservation from fresh-frozen flower</li>
+            <li>All hardware certified by manufacturer, no vitamin E acetate, ever</li>
+            <li>Batch COA QR code printed directly on packaging</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Supply Chain Verification</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="chain-step"><span class="cs-n">1</span><div><div class="cs-t">Cultivation — METRC Plant Tag</div><div class="cs-s">Each plant assigned unique METRC ID at clone or seed stage</div></div></div>
+          <div class="chain-step"><span class="cs-n">2</span><div><div class="cs-t">Harvest — Package Tag Issued</div><div class="cs-s">Weight recorded, package tag affixed, manifest generated</div></div></div>
+          <div class="chain-step"><span class="cs-n">3</span><div><div class="cs-t">Transfer to Processor</div><div class="cs-s">METRC transfer manifest, driver credential logged, hash anchored</div></div></div>
+          <div class="chain-step"><span class="cs-n">4</span><div><div class="cs-t">Extraction &amp; Fill</div><div class="cs-s">New package tags for finished product, COA required before transfer</div></div></div>
+          <div class="chain-step"><span class="cs-n">5</span><div><div class="cs-t">Retail Intake</div><div class="cs-s">Package scanned into METRC, XRPL hash anchored, inventory live</div></div></div>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">DEA / FDA Awareness</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <ul class="panel-list">
+            <li>Cannabis remains Schedule I federally — all operations are Michigan intrastate only</li>
+            <li>No interstate commerce of any product, derivative, or component</li>
+            <li>IRS 280E applies — no deductions beyond COGS, tax counsel engaged</li>
+            <li>FinCEN cash reporting protocols observed for all transactions above threshold</li>
+            <li>No FDA-regulated health claims made on any product or packaging</li>
+          </ul>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 — EDIBLES -->
+<div class="slide" data-i="2">
+  <div class="slide-bg" style="background-image:url('https://media.istockphoto.com/id/1187031628/photo/colorful-marijuana-gummy-candies.jpg?b=1&s=612x612&w=0&k=20&c=HzCflM3cVX4u2rmnDaH2DyLucNVfqdI6Vwcr60llso0=')"></div>
+  <div class="slide-overlay"></div>
+  <div class="slide-content">
+    <div class="eyebrow">Edibles · Gummies &amp; Infused</div>
+    <h2 class="slide-title">PRECISE<br><span class="hi">DOSE</span><br>EVERY BITE</h2>
+    <p class="slide-sub">Michigan-produced infused edibles. Every unit precisely dosed, individually packaged, and compliant with CRA childproof and labeling requirements.</p>
+    <div class="menu-stack">
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Edible Products</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="panel-row">
+            <div class="pstat"><span class="pstat-v">5mg</span><span class="pstat-l">Per Piece</span></div>
+            <div class="pstat"><span class="pstat-v">10pk</span><span class="pstat-l">Per Pack</span></div>
+            <div class="pstat"><span class="pstat-v">100mg</span><span class="pstat-l">Max/Package</span></div>
+          </div>
+          <ul class="panel-list">
+            <li>100mg max per package per CRA rules — no single-serve above 100mg</li>
+            <li>Childproof, resealable packaging with required state warnings</li>
+            <li>Universal symbol on every piece and on packaging</li>
+            <li>Not appealing to minors — no cartoon characters, no candy lookalikes beyond gummy format</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">MDHHS &amp; MDARD Compliance</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="compliance-grid">
+            <div class="cg-item"><strong>MDHHS</strong><span>Health standards for infused product processing</span></div>
+            <div class="cg-item"><strong>MDARD</strong><span>Food safety rules for infused edible production</span></div>
+            <div class="cg-item"><strong>CRA Rules</strong><span>R 420.1 — packaging, labeling, potency limits</span></div>
+            <div class="cg-item"><strong>Lab Testing</strong><span>Potency, pesticides, heavy metals, microbials</span></div>
+          </div>
+          <ul class="panel-list">
+            <li>Third-party ISO-accredited lab testing required before retail transfer</li>
+            <li>Batch numbers traceable in METRC from infusion to point of sale</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Möbius Constitutional Accord</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <ul class="panel-list">
+            <li>Operating Agreement governs all supply chain decisions and compliance events</li>
+            <li>Möbius topology: 1 licensed entity = 1 operating authority — no diffusion of accountability</li>
+            <li>All compliance events hash-anchored on XRPL under the Accord framework</li>
+            <li>Regulator-facing audit dashboard available to CRA inspectors upon request</li>
+          </ul>
+          <button class="pa pa-outline" onclick="showSID()">View Chain Anchor →</button>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4 — EXTRACTS -->
+<div class="slide" data-i="3">
+  <div class="slide-bg" style="background-image:url('https://media.istockphoto.com/id/1075376246/photo/oil-hemp-in-two-jars-and-sauceboat-on-wooden-board.jpg?b=1&s=612x612&w=0&k=20&c=IFNVr3JHp4ubO_l576Nff1HhJb95KBmv8Vog1aedWvE=')"></div>
+  <div class="slide-overlay"></div>
+  <div class="slide-content">
+    <div class="eyebrow">Concentrates &amp; Extracts · Solventless &amp; Solvent</div>
+    <h2 class="slide-title">FULL<br><span class="hi">SPECTRUM</span><br>POTENCY</h2>
+    <p class="slide-sub">Rosin, hash, sauce, and live resin. Michigan extracted, lab-certified, and supply chain anchored under the Möbius Constitutional Accord.</p>
+    <div class="menu-stack">
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Extract Catalog</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="panel-row">
+            <div class="pstat"><span class="pstat-v">RSN</span><span class="pstat-l">Rosin</span></div>
+            <div class="pstat"><span class="pstat-v">SAU</span><span class="pstat-l">Sauce</span></div>
+            <div class="pstat"><span class="pstat-v">HSH</span><span class="pstat-l">Hash</span></div>
+          </div>
+          <ul class="panel-list">
+            <li>Solventless rosin — heat and pressure only, no chemical solvents</li>
+            <li>Live resin sauce — flash-frozen fresh flower, full terpene profile</li>
+            <li>Ice water hash — traditional process, modern testing standards</li>
+            <li>All CO2 and hydrocarbon extracts produced at licensed MIP facility</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">FinCEN &amp; IRS Compliance</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <ul class="panel-list">
+            <li>CTR filed for cash transactions at or above $10,000 per FinCEN requirements</li>
+            <li>SAR filed for any suspicious transaction patterns as required</li>
+            <li>IRS 280E: only Cost of Goods Sold deductible — no standard business deductions</li>
+            <li>Separate accounting ledger maintained for 280E COGS calculation</li>
+            <li>All financial records hashed and anchored — tamper-evident for audit</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="menu-group">
+        <button class="menu-btn" onclick="toggleMenu(this)">
+          <span class="menu-label">Web3 Compliance Stack</span>
+          <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="menu-panel"><div class="mpi">
+          <div class="chain-step"><span class="cs-n">DB</span><div><div class="cs-t">PostgreSQL — Core Compliance Database</div><div class="cs-s">All METRC events, employee credentials, manifest logs stored encrypted</div></div></div>
+          <div class="chain-step"><span class="cs-n">SHA</span><div><div class="cs-t">SHA-256 Hashing Layer</div><div class="cs-s">Canonical JSON → hash before any record is committed</div></div></div>
+          <div class="chain-step"><span class="cs-n">XRP</span><div><div class="cs-t">XRPL Anchor — Memo Field</div><div class="cs-s">Hash written to dedicated Compliance Anchor wallet transaction memo</div></div></div>
+          <div class="chain-step"><span class="cs-n">SID</span><div><div class="cs-t">Sovereign Identity — W3C DID on XRPL</div><div class="cs-s">Employee and establishment credentials anchored as NFTs, $0.00004/verify</div></div></div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- end #track -->
+
+<!-- WALLET MODAL -->
+<div id="wallet-modal" onclick="closeWalletIfBg(event)">
+  <div class="wm-box">
+    <button class="wm-close" onclick="closeWallet()">✕</button>
+    <div class="wm-title">Connect Wallet</div>
+    <div class="wm-sub">XRPL · Sovereign Identity · Age Verification</div>
+    <div class="wm-options">
+      <div class="wm-opt" onclick="connectWallet('xaman')">
+        <div class="wm-opt-icon" style="background:rgba(0,180,120,.15);border:1px solid rgba(0,180,120,.3)">⚡</div>
+        <div>
+          <div class="wm-opt-name">Xaman (XUMM)</div>
+          <div class="wm-opt-tag">XRPL Native · Recommended</div>
+        </div>
+      </div>
+      <div class="wm-opt" onclick="connectWallet('crossmark')">
+        <div class="wm-opt-icon" style="background:rgba(168,224,52,.1);border:1px solid rgba(168,224,52,.2)">◈</div>
+        <div>
+          <div class="wm-opt-name">Crossmark</div>
+          <div class="wm-opt-tag">XRPL Browser Extension</div>
+        </div>
+      </div>
+      <div class="wm-opt" onclick="connectWallet('gem')">
+        <div class="wm-opt-icon" style="background:rgba(100,120,255,.1);border:1px solid rgba(100,120,255,.2)">◆</div>
+        <div>
+          <div class="wm-opt-name">GEM Wallet</div>
+          <div class="wm-opt-tag">XRPL · Multi-Platform</div>
+        </div>
+      </div>
+    </div>
+    <div class="wm-note">
+      Wallet connection links your <span>XRPL Sovereign Identity</span> for age<br>
+      verification and purchase history. No PII stored on-chain.<br>
+      Michigan residents 21+ only.
+    </div>
+  </div>
+</div>
+
+<!-- SOVEREIGN ID PANEL -->
+<div id="sid-panel">
+  <div class="sid-title">Sovereign ID</div>
+  <div class="sid-sub">XRPL · Möbius Constitutional Accord</div>
+  <div class="sid-row"><span class="sid-key">Status</span><span class="sid-val green" id="sid-status">Establishment Active</span></div>
+  <div class="sid-row"><span class="sid-key">Network</span><span class="sid-val">XRPL Mainnet</span></div>
+  <div class="sid-row"><span class="sid-key">License</span><span class="sid-val green">CRA Verified ✓</span></div>
+  <div class="sid-row"><span class="sid-key">METRC</span><span class="sid-val green">Synced ✓</span></div>
+  <div class="sid-row"><span class="sid-key">Last Anchor</span><span class="sid-val amber" id="sid-anchor-time">—</span></div>
+  <div class="sid-row"><span class="sid-key">Anchor Hash</span></div>
+  <div class="sid-hash" id="sid-hash">Awaiting compliance event...</div>
+  <div style="margin-top:.8rem;display:flex;gap:.6rem">
+    <button class="pa pa-outline" style="font-size:.55rem;padding:.45rem .9rem" onclick="anchorEvent()">Anchor Event</button>
+    <button class="pa pa-outline" style="font-size:.55rem;padding:.45rem .9rem" onclick="document.getElementById('sid-panel').classList.remove('open')">Close</button>
+  </div>
+</div>
+
+<script>
+// ── SLIDES ─────────────────────────────────────────────────────
+const track   = document.getElementById('track');
+const slides  = document.querySelectorAll('.slide');
+const dots    = document.querySelectorAll('.sdot');
+const navBtns = document.querySelectorAll('.nav-btn');
+const prevBtn = document.getElementById('arrow-prev');
+const nextBtn = document.getElementById('arrow-next');
+const counter = document.getElementById('slide-counter');
+const N = slides.length;
+let cur = 0;
+
+function goTo(i) {
+  if (i < 0 || i >= N) return;
+  slides[cur].querySelectorAll('.menu-btn.open').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling?.classList.remove('open');
+  });
+  cur = i;
+  track.style.transform = `translateX(-${i * 100}vw)`;
+  slides.forEach((s,j)  => s.classList.toggle('active', j === i));
+  dots.forEach((d,j)    => d.classList.toggle('active', j === i));
+  navBtns.forEach((b,j) => b.classList.toggle('active', j === i));
+  prevBtn.classList.toggle('hidden', i === 0);
+  nextBtn.classList.toggle('hidden', i === N - 1);
+  counter.textContent = `${i + 1} / ${N}`;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goTo(cur + 1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); goTo(cur - 1); }
+});
+
+let tsX = 0, tsY = 0;
+document.addEventListener('touchstart', e => { tsX = e.touches[0].clientX; tsY = e.touches[0].clientY; }, { passive:true });
+document.addEventListener('touchend', e => {
+  const dx = tsX - e.changedTouches[0].clientX;
+  const dy = Math.abs(tsY - e.changedTouches[0].clientY);
+  if (Math.abs(dx) > 55 && dy < 80) goTo(cur + (dx > 0 ? 1 : -1));
+}, { passive:true });
+
+// ── MENU DROPDOWNS ─────────────────────────────────────────────
+function toggleMenu(btn) {
+  const panel = btn.nextElementSibling;
+  if (!panel || !panel.classList.contains('menu-panel')) return;
+  const wasOpen = btn.classList.contains('open');
+  btn.closest('.slide-content').querySelectorAll('.menu-btn.open').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling?.classList.remove('open');
+  });
+  if (!wasOpen) {
+    btn.classList.add('open');
+    panel.classList.add('open');
+  }
+}
+
+// ── WALLET ──────────────────────────────────────────────────────
+let walletConnected = false;
+let walletAddress = null;
+
+function openWallet() {
+  if (walletConnected) { showSID(); return; }
+  document.getElementById('wallet-modal').classList.add('open');
+}
+function closeWallet() {
+  document.getElementById('wallet-modal').classList.remove('open');
+}
+function closeWalletIfBg(e) {
+  if (e.target === document.getElementById('wallet-modal')) closeWallet();
+}
+
+function connectWallet(type) {
+  closeWallet();
+  // Simulate wallet connection — replace with real XRPL wallet SDK in production
+  // For Xaman: use xumm.xapp or xumm-oauth2-pkce
+  // For Crossmark: use crossmark.io SDK
+  // For GEM: use gemwallet.app SDK
+  const fakeAddresses = {
+    xaman:     'rTRUDUB' + Math.random().toString(36).slice(2,10).toUpperCase(),
+    crossmark: 'rCMRK'   + Math.random().toString(36).slice(2,10).toUpperCase(),
+    gem:       'rGEM'    + Math.random().toString(36).slice(2,10).toUpperCase(),
+  };
+  walletAddress = fakeAddresses[type];
+  walletConnected = true;
+
+  const btn = document.getElementById('wallet-btn');
+  const lbl = document.getElementById('wallet-label');
+  btn.classList.add('connected');
+  lbl.textContent = walletAddress.slice(0,12) + '…';
+
+  // Auto-show sovereign ID
+  setTimeout(() => showSID(), 300);
+  anchorEvent();
+}
+
+// ── SOVEREIGN ID + XRPL ANCHOR ─────────────────────────────────
+function showSID() {
+  document.getElementById('sid-panel').classList.toggle('open');
+}
+
+async function sha256(message) {
+  // Real SHA-256 via WebCrypto API
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray  = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function anchorEvent() {
+  // Simulate a compliance event hash
+  // In production: serialize real METRC event to canonical JSON, hash, write to XRPL memo
+  const event = {
+    event_type: 'retail_compliance_checkpoint',
+    establishment: 'TRU-DUB-MI-LICENSE-001',
+    metrc_package_tag: 'ABCDEF' + Math.floor(Math.random()*999999).toString().padStart(6,'0'),
+    timestamp_utc: new Date().toISOString(),
+    operator_id: 'marijuana_establishment_employee_license_number_placeholder',
+    session_wallet: walletAddress || 'unconnected',
+  };
+
+  const canonical = JSON.stringify(event, Object.keys(event).sort());
+  const hash = await sha256(canonical);
+
+  document.getElementById('sid-hash').textContent = hash;
+  document.getElementById('sid-anchor-time').textContent = new Date().toLocaleTimeString();
+
+  // In production: send hash to XRPL via:
+  // xrpl.js client.submitAndWait({ TransactionType:'Payment', Memos:[{Memo:{MemoData: hexEncode(hash)}}], ... })
+  // Store full event in PostgreSQL encrypted, store hash on XRPL only
+}
+
+goTo(0);
+</script>
+</body>
+</html>
